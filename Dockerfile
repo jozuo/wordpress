@@ -1,9 +1,5 @@
 FROM wordpress:latest
 
-# ARG DOCKER_UID=1000
-# ARG DOCKER_USER=docker
-# ARG DOCKER_PASSWORD=docker
-
 ARG GIT_VERSION=2.30.2
 ARG NVIM_VERSION=0.5.0
 ARG ARCH_TYPE
@@ -88,31 +84,18 @@ RUN apt-get install -y direnv fasd fzf silversearcher-ag tig zsh \
  && rm -f lsd* 
 
 # php
-# COPY --from=composer /usr/bin/composer /usr/bin/composer
-# RUN apt-get install -y default-mysql-client \
-#  && docker-php-ext-install pdo_mysql \
-#  && pecl install xdebug-2.8.1 \
-#  && docker-php-ext-enable xdebug
-
-# user
-# RUN useradd -m --uid ${DOCKER_UID} --groups sudo ${DOCKER_USER} \
-#   && echo ${DOCKER_USER}:${DOCKER_PASSWORD} | chpasswd \
-#   && echo "${DOCKER_USER}   ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-# USER ${DOCKER_USER}
-ENV LANG=ja_JP.UTF-8
-ENV LANGUAGE=ja_JP.UTF-8
+RUN pecl install xdebug-2.8.1 \
+ && docker-php-ext-enable xdebug
 
 # dotfiles
 RUN git clone https://github.com/jozuo/dotfiles.git ${HOME}/dotfiles/ \
  && bash ${HOME}/dotfiles/bin/install.sh
 
+# env
+ENV LANG=ja_JP.UTF-8
+ENV LANGUAGE=ja_JP.UTF-8
+
 # volume
 RUN mkdir -p ${HOME}/.vim/ \
- && mkdir -p ${HOME}/dotfiles/.config/coc/ \
-# && mkdir -p /var/www/html/ \
- && sudo chown -R ${DOCKER_USER}:${DOCKER_USER} \
-    ${HOME}/.vim/ \
-    ${HOME}/dotfiles/.config/coc/ \
-    /var/www/html 
-# VOLUME ["${HOME}/.vim/", "${HOME}/dotfiles/.config/coc/", "/var/www/html"]
+ && mkdir -p ${HOME}/dotfiles/.config/coc/ 
 VOLUME ["${HOME}/.vim/", "${HOME}/dotfiles/.config/coc/"]

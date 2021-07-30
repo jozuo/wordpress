@@ -8,9 +8,14 @@ services:
         ARCH_TYPE: "${ARCH_TYPE}"
     restart: unless-stopped
     ports:
-      - "8000:80"
+      - 8000:80
+      - 9000:9000
     volumes:
       - ./html:/var/www/html
+      - vim_modules:/home/docker/.vim/
+      - coc_modules:/home/docker/dotfiles/.config/coc/
+      - ~/.ssh/:/home/docker/.ssh/
+      - ./xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
     environment:
       WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_USER: wordpress
@@ -27,6 +32,9 @@ services:
       MARIADB_DATABASE: wordpress
       MARIADB_USER: wordpress
       MARIADB_PASSWORD: wordpress
+      TZ: "Asia/Tokyo"
 
 volumes:
+  vim_modules:
+  coc_modules:
   db_data:

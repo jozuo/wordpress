@@ -3,7 +3,7 @@ version: "3"
 services:
   wordpress:
     build:
-      context: .
+      context: docker/wordpress
       args:
         ARCH_TYPE: "${ARCH_TYPE}"
     restart: unless-stopped
@@ -12,9 +12,9 @@ services:
       - 9000:9000
     volumes:
       - ./html:/var/www/html
-      - vim_modules:/home/docker/.vim/
-      - coc_modules:/home/docker/dotfiles/.config/coc/
-      - ~/.ssh/:/home/docker/.ssh/
+      - vim_modules:/root/.vim/
+      - coc_modules:/root/dotfiles/.config/coc/
+      - ~/.ssh/:/root/.ssh/
       - ./xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
     environment:
       WORDPRESS_DB_HOST: db:3306
@@ -33,6 +33,17 @@ services:
       MARIADB_USER: wordpress
       MARIADB_PASSWORD: wordpress
       TZ: "Asia/Tokyo"
+  bs:
+    build:
+      context: docker/browser-sync
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+      - 3001:3001
+    volumes:
+      - ./html:/workspace/html
+    depends_on:
+      - wordpress
 
 volumes:
   vim_modules:

@@ -8,7 +8,6 @@ services:
         ARCH_TYPE: "${ARCH_TYPE}"
     restart: unless-stopped
     ports:
-      - 8000:80
       - 9000:9000
     volumes:
       - ./html:/var/www/html
